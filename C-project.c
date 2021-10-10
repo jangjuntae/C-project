@@ -18,8 +18,6 @@
 #define P 80 //일시정지
 #define ESC 27 //게임종료 
 
-//콘솔에서 그릴 x,y의 좌표
-
 
 int main(void) {
 
