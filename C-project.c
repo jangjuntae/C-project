@@ -12,7 +12,7 @@
 
 // 키보드 값
 #define LEFT 75 // 좌로 이동
-#define RIGHT 77 // 우로 이동
+#define RIGHT 77 // 우로 이동 
 #define UP 72 // 회전
 #define DOWN 80 // 천천히 내려오기
 #define SPACE 32 // 빠르게 내려오기
@@ -20,6 +20,61 @@
 #define P 80 //일시정지
 #define ESC 27 //게임종료 
 
+typedef struct _tetris {
+    int level; // 게임의 레벨
+    int gameover; // 게임오버의 유무
+    int score; // 점수
+    int rotation; // 테트리스의 도형의 현재 방향
+    int absX, absY; //도형의 절대 좌표
+    int curX, curY; //도형의 현재 좌표
+    int curblock; //현재 블럭
+    int nextblockl; //다음 불럭
+}Tetris;
+
+/*
+//키를 입력받는 함수 
+//getch 함수는 scanf 함수와 달리 입력하는 동시에 반응을 하는 함수이다.
+char key;
+key = getch();cs
+*/
+
+/*
+//kbhit 함수
+//kbhit 함수는 키보드가 눌렸는지 판단하는 함수이다. 눌렸으면 1 아니면 0 반환
+while(kbhit){
+    key = getch();
+    swich(key) {
+        case(up);
+        .......
+        .......
+    if(key == SPACEBAR){
+        //스페이스바는 if를 쓰는 이유는 스위치 문에 넣으면 방향키와 스페이스바를 동시에 사용이 불가능해서입니다.
+    }
+    }
+}
+*/
+
+/*
+// 커서 좌표 구조체
+// COORD 자료형은 Windows.h 에 내장
+// 정말 간단하게 x좌표와 y좌표를 저장할 수 있게 정의 되어 있음.
+typedef struct _COORD{
+    short x;
+    short y;
+}COORD;
+*/
+
+/*
+// 커서를 이동시키는 함수 
+*/
+
+
+
+
+
+
+
+/*
 //보드의 크기
 //세로 + 1, 가로 + 2 = 경계선을 위해서
 long board[Tetris_height + 1][Tetris_width + 2] = { 0 };
@@ -108,7 +163,7 @@ void display() {
         printf("\n");
     }
 }
-*/
+
 
 
 int main(void) {
@@ -117,3 +172,4 @@ int main(void) {
 
     return 0;
 }
+*/
