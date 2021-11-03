@@ -31,12 +31,12 @@ typedef struct _tetris {
     int nextblockl; //다음 불럭
 }Tetris;
 
-/
+/*
 //키를 입력받는 함수 
 //getch 함수는 scanf 함수와 달리 입력하는 동시에 반응을 하는 함수이다.
 char key;
 key = getch(); cs
-
+*/
 
 /*
 //kbhit 함수
@@ -59,14 +59,14 @@ while(kbhit){
 // 커서 좌표 구조체
 // COORD 자료형은 Windows.h 에 내장
 // 정말 간단하게 x좌표와 y좌표를 저장할 수 있게 정의 되어 있음.
-typedef struct _COORD{
-    short x;
-    short y;
+typedef struct _COORD {
+    int x;
+    int y;
 }COORD;
 
 
 // 커서를 이동시키는 함수 
-void setCursor(int x, int y){
+void setCursor(int x, int y) {
     COORD pos = { x, y };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
@@ -130,9 +130,9 @@ int block[7][4][4][4] = {
         0,0,1,0,
 
 
-    // ㅁ 모양
+        // ㅁ 모양
 
-        0,0,0,0
+        0,0,0,0,
         0,1,1,0,
         0,1,1,0,
         0,0,0,0,
