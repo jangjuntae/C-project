@@ -84,7 +84,7 @@ void removeCursor() {
 
 
 // 도형의 모양과 회전
-
+// [도형의 종류][도형의 회전 개수][도형의 세로 최대 길이][도형의 가로 최대 길이]
 int block[6][4][4][4] = {
 
     // ㄴ 모양
@@ -221,7 +221,23 @@ int block[6][4][4][4] = {
         0,1,0,0,
 };
 
+
 // 버튼을 눌렀을 때 배열을 회전 시켜 도형을 돌아가게 하는 함수
+
+// 그렸던 도형을 제거해주는 함수
+// 테트리스의 도형이 아래로 한칸씩 떨어지면서 지나간 자리에 도형이 남겨지게 되는 것을 없애줌
+// 도형이 있던 부분 curX absX, curY + absY를 기점으로 " "으로 채우는 기능을 하는 함수
+// 도형이 아래로 떨어질때, 한 라인이 채워질 때, 도형이 회전할 때 호출
+void removeCurrentBlock(Tetris t)
+{
+    for (int i = 0; i < 4; i++);
+        for (int j = 0; j < 4; j++);
+            if (block[t.curblock][t.rotation][j][i] == 1)
+            {
+                setCursor(i + t.curX) * 2 + t.absX, j + t.curY + t.absY);
+                print(" ");
+            }
+}
 
 int main() {
 
