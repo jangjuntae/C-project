@@ -239,6 +239,51 @@ void removeCurrentBlock(Tetris t)
             }
 }
 
+// gameboard 벽
+// FRAME_HEIGHT = 22, FRAME_WIDTH = 15 즉 y == FRAME_HEIGHT - 1, y = 21일 때 바닥이 된다
+// x == 0이거나 x == FRAME_WIDTH - 1, x가 0이거나 x가 13일 때 벽이 된다
+void init(Tetris* t) {
+    t->absX = 5; //16
+    t->absY = 1; //3
+    t->gameover = 0;
+    t->level = 1;
+    t->score = 0;
+    t->curblock = -1;
+    t->nextblock = -1;
+    t->curX = 5;
+    t->curY = -3;
+    t->rotation = 0;
+    srand((unsigned)time(NULL));
+    for (int y = 0; y < FRAME_HEIGHT; y++) {
+        for (int x = 0; x < FRAME_WIDTH; x++) {
+            if ((x == 0) || (x == FRAME_WIDTH - 1))
+                gameboard[y][x] = 1;
+            else if (y == FRAME_HEIGHT - 1)
+                gameboard[y][x] = 1;
+            else
+                gameboard[y][x] = 0;
+        }
+    }
+}
+
+// 도형과 충돌할 때 도형이 바닥에 닿을경우"벽이나 바닥으로 인식"
+// 현재 t 구조체의 curY와 curX에 대하여 gameboard 좌표 상에 blocks을 추가 시키는 것
+// 이후부터는 합쳐진 블럭은 gameboard상에서 벽 또는 바닥으로 인식하게 된다.
+
+void mergeBlock(Tetris t)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            gameboard[t.curY + i][t.curX + j] |= blocks[t.curblock][t.rotation][i][j];
+        }
+    }
+    lineCheck(t);
+    showTable(t);
+}
+
+
 int main() {
 
 }
