@@ -16,9 +16,6 @@
 #define UP 72 // 회전
 #define DOWN 80 // 천천히 내려오기
 #define SPACE 32 // 빠르게 내려오기
-#define p 112 //일시정지 
-#define P 80 //일시정지
-#define ESC 27 //게임종료 
 
 typedef struct _tetris {
     int level; // 게임의 레벨
