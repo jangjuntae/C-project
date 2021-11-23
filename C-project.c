@@ -45,8 +45,9 @@ int moveBlock(Tetris* t);
 void gameoverCheck();
 void lineCheck(Tetris t);
 
+// 도형은 4차원 배열로 선언한다.
 // 도형의 모양과 회전
-// [도형의 종류][도형의 회전 개수][도형의 세로 최대 길이][도형의 가로 최대 길이]
+// [도형의 개수(종류)][도형의 회전 개수][도형의 세로 길이][도형의 가로 길이]
 int block[7][4][4][4] = {
 
     // ㄴ 반대
@@ -204,8 +205,17 @@ int block[7][4][4][4] = {
            0,1,0,0,
 };
 
-// 위의 함수를 사용하면 화면이 업데이트 될 때 (도형이 움직이거나) 커서가 보이게 된다.
+// 커서를 이동시키는 함수 
+// SetConsoleCursorPosition = 콘솔 커서 위치 지정 함수
+// 표준 출력 핸들을 가져와서 x와 y 값을 넣은 COORD형 변수(window.h에 내장) pos 위치에 커서 위치를 지정
+void setCursor(int x, int y) {
+    COORD pos = { x,y };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+// setCursor 함수를 사용하면 화면이 업데이트 될 때 (도형이 움직이거나) 커서가 보이게 된다.
 // 표준 출력 핸들을 가져오는데 CONSOLE_CURSOR_INFO 형식의 curinfo의 주소를 가져와서 커서를 안보이게 하겠다.
+// window.h에 내장
 void removeCursor() {
     CONSOLE_CURSOR_INFO curinfo;
     GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &curinfo);
@@ -213,15 +223,6 @@ void removeCursor() {
     GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &curinfo);
 }
 
-// 커서를 이동시키는 함수 
-// SetConsoleCursorPosition = 콘솔 커서 위치 지정 함수
-// 표준 출력 핸들을 가져와서 x와 y 값을 넣은 COORD형 변수 pos 위치에 커서 위치를 지정
-void setCursor(int x, int y) {
-    COORD pos = { x,y };
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
-
-// gameboard 벽
 // Tetris_height = 22, Tetris_width = 15 즉 y == Tetris_height - 1, y = 21일 때 바닥이 된다.
 // x == 0이거나 x == Tetris_width - 1, x가 0이거나 x가 13일 때 벽이 된다.
 void init(Tetris* t) {
