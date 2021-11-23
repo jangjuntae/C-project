@@ -324,6 +324,51 @@ void mergeBlock(Tetris t)
     showTable(t);
 }
 
+
+// 랜덤함수를 사용해서 도형을 무작위로 나오게 하기
+// 랜덤 범위는 도형이 6개이니 0 ~ 5
+void newBlock(Tetris* t)
+{
+    int rot = rand() % 7;
+    if (t->curblock == -1) {
+        t->curblock = rot;
+        rot = rand() % 6; // 0번 1번 2번 3번 4번 5번
+        t->nextblock = rot;
+    }
+    else
+        t->nextblock = rot;
+    nextBlockTable(*t);
+}
+
+// 인식된 키에 따라 반응하는 함수
+// 블럭이 움직이게 해주는 함수를 만들고, 이전의 블럭의 그림을 제거해주는
+// "removeCurrentBlock"을 호출해주고 curY의 값을 1 증가시켜준다.
+// 또한 충동했다면 새로 블럭을 생성하도록 초기화해주는 과정이 들어갔다.
+// 만약에 충돌했는데 Y가 0보다 작다, 즉 블럭이 꼭대기에 닿았을 경우에 1을 반환하고
+// 그렇지 않으면 2 또는 충돌을 안했다면 1을 반환한다.
+// 즉, 1을 반환하면 게임 오버
+int moveBlock(Tetris* t)
+{
+    removeCurrentBlock(*t);
+
+    t->curY++;	//블럭을 한칸 아래로 내림
+    if (collisionCheck(*t) == 1)
+    {
+        if (t->curY <= 0)
+            return 1;
+        t->curY--;
+        mergeBlock(*t);
+        t->curblock = t->nextblock;
+        newBlock(t);
+        t->curX = 5;
+        t->curY = -3;
+        t->rotation = 0;
+        nextBlockTable(*t);
+        return 2;
+    }
+    return 0;
+}
+
 int main() {
 
 }
