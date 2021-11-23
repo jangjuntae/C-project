@@ -173,7 +173,7 @@ int block[6][4][4][4] = {
         0,0,1,0,
         0,0,0,0,
         0,0,0,0,
-            //  ㅗ 모양
+        //  ㅗ 모양
 
         0,0,0,0,
         0,0,1,0,
@@ -240,8 +240,8 @@ void removeCurrentBlock(Tetris t)
 }
 
 // gameboard 벽
-// FRAME_HEIGHT = 22, FRAME_WIDTH = 15 즉 y == FRAME_HEIGHT - 1, y = 21일 때 바닥이 된다
-// x == 0이거나 x == FRAME_WIDTH - 1, x가 0이거나 x가 13일 때 벽이 된다
+// Tetris_height = 22, Tetris_width = 15 즉 y == Tetris_height - 1, y = 21일 때 바닥이 된다.
+// x == 0이거나 x == Tetris_width - 1, x가 0이거나 x가 13일 때 벽이 된다.
 void init(Tetris* t) {
     t->absX = 5; //16
     t->absY = 1; //3
@@ -254,11 +254,11 @@ void init(Tetris* t) {
     t->curY = -3;
     t->rotation = 0;
     srand((unsigned)time(NULL));
-    for (int y = 0; y < FRAME_HEIGHT; y++) {
-        for (int x = 0; x < FRAME_WIDTH; x++) {
-            if ((x == 0) || (x == FRAME_WIDTH - 1))
+    for (int y = 0; y < Tetris_height; y++) {
+        for (int x = 0; x < Tetris_width; x++) {
+            if ((x == 0) || (x == Tetris_width - 1))
                 gameboard[y][x] = 1;
-            else if (y == FRAME_HEIGHT - 1)
+            else if (y == Tetris_width - 1)
                 gameboard[y][x] = 1;
             else
                 gameboard[y][x] = 0;
@@ -294,7 +294,7 @@ int collisionCheck(Tetris t)
     {
         for (int j = 0; j < 4; j++)
         {
-            if (((t.curX + j) == 0) || ((t.curX + j) == FRAME_WIDTH - 1)) {
+            if (((t.curX + j) == 0) || ((t.curX + j) == Tetris_width - 1)) {
                 dat = 1;
             }
             else {
@@ -367,6 +367,56 @@ int moveBlock(Tetris* t)
         return 2;
     }
     return 0;
+}
+
+// 줄이 꽉 찼을 때 인식하여 삭제하는 함수
+// 내려오는 테트리스 조각과 이미 내려온 배열은 전부 하나의 배열이다.
+// 항상 1줄만 사라지는 것이 아니라 2줄 이상을 제거할 수 있다. -> 따라서 특정 라인이 아닌 전체 라인을 확인
+// 라인을 체크할 때 가로의 길이 - 2 부분을 체크해야함(테트리스의 테두리 제외)
+// 한 라인의 모든 요소가 1이 됐을 때 0으로 바꾸어줘서 제거한다.
+
+void lineCheck(Tetris t)
+{
+    // 앞에 i, j, k를 미리 선언하는 이유는 j의 경우에는 다른 경우에는 다른 부분에서 중복되게 체크해야하기 때문이다.
+    // i와 k는 j는 앞에서 선언돼서 그냥 코드의 일관성을 두기 위해서 같이 선언하였습니다.
+    int i, j, k;
+    for (i = 0; i < Tetris_height - 1; i++)
+    {
+        // j가 1부터 시작하는 이유는 라인의 첫 번째는 테트리스 테두리이기 때문이다.
+        // j의 끝부분이 FRAME_WIDTH - 1인 이유는 라인의 마지막이 테트리스 테두리이기 때문입니다.
+        for (j = 1; j < Tetris_width - 1; j++)
+        {
+            // 라인의 한 요소라도 0이면 for문 전체를 탈출 == 라인이 채워지지 않아서 제거되지 않음
+            if (gameboard[i][j] == 0)
+                break;
+        }
+
+        // 라인의 한 요소라도 0이 아닐 경우 == 라인이 채워졌을 경우
+        if (j == Tetris_width - 1)	//한줄이 다 채워졌음
+        {
+            showTable(t);
+            setCursor(1 * 2 + t.absX, i + t.absY);
+            for (j = 1; j < Tetris_width - 1; j++)
+            {
+                printf("□");
+                Sleep(10);
+            }
+            setCursor(1 * 2 + t.absX, i + t.absY);
+            for (j = 1; j < Tetris_width - 1; j++)
+            {
+                printf("  ");
+                Sleep(10);
+            }
+            for (k = i; k > 0; k--)
+            {
+                for (j = 1; j < Tetris_width - 1; j++)
+                    gameboard[k][j] = gameboard[k - 1][j];
+            }
+            for (j = 1; j < Tetris_width - 1; j++)
+                gameboard[0][j] = 0;
+            t.score += 100 + (t.level * 10) + (rand() % 10);
+        }
+    }
 }
 
 int main() {
