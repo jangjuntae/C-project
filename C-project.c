@@ -392,12 +392,7 @@ void lineCheck(Tetris t)
         if (j == Tetris_width - 1)	//한줄이 다 채워졌음
         {
             showTable(t);
-            setCursor(1 * 2 + t.absX, i + t.absY);
-            for (j = 1; j < Tetris_width - 1; j++)
-            {
-                printf("□");
-                Sleep(10);
-            }
+
             setCursor(1 * 2 + t.absX, i + t.absY);
             for (j = 1; j < Tetris_width - 1; j++)
             {
