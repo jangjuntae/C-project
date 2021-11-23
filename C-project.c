@@ -12,10 +12,11 @@
 
 // 키보드 값
 #define LEFT 75 // 좌로 이동
-#define RIGHT 77 // 우로 이동 
+#define RIGHT 77 // 우로 이동
 #define UP 72 // 회전
 #define DOWN 80 // 천천히 내려오기
 #define SPACE 32 // 빠르게 내려오기
+
 
 typedef struct _tetris {
     int level; // 게임의 레벨
@@ -392,18 +393,20 @@ void lineCheck(Tetris t)
         if (j == Tetris_width - 1)	//한줄이 다 채워졌음
         {
             showTable(t);
-
+            // 라인을 0으로 만들고 공백으로 만듭니다.
             setCursor(1 * 2 + t.absX, i + t.absY);
             for (j = 1; j < Tetris_width - 1; j++)
             {
                 printf("  ");
                 Sleep(10);
             }
+            // 제거되지 않은 라인은 전부 한칸씩 내립니다.
             for (k = i; k > 0; k--)
             {
                 for (j = 1; j < Tetris_width - 1; j++)
                     gameboard[k][j] = gameboard[k - 1][j];
             }
+            // 맨위 라인(도형이 생성되는 부분)은 빈 부분으로 둡니다
             for (j = 1; j < Tetris_width - 1; j++)
                 gameboard[0][j] = 0;
             t.score += 100 + (t.level * 10) + (rand() % 10);
