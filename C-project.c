@@ -283,6 +283,46 @@ void mergeBlock(Tetris t)
     showTable(t);
 }
 
+// 충돌을 확인하는 함수
+// 미리 판단
+// 현재 블록의 부분이 1이고, 현재 좌표에 비례해서 이 블록의 다음 y좌표의 gameboard값이 1일 때
+// 1을 봔환하고 벽이나 바닥에 부딛히지 않았다면 0을 반환합니다.
+int collisionCheck(Tetris t)
+{
+    int dat = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (((t.curX + j) == 0) || ((t.curX + j) == FRAME_WIDTH - 1)) {
+                dat = 1;
+            }
+            else {
+                dat = gameboard[t.curY + i][t.curX + j];
+            }
+            if ((blocks[t.curblock][t.rotation][i][j] == 1) && (dat == 1)) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// 도형이 바닥에 닿을 경우 벽이나 바닥으로 인식하는 함수
+// 현재 t 구조체의 curY curX에 대하여 gameboard 좌표상에 blocks를 추가 시킨다
+// 이후부터는 합쳐진 블럭은 gameboard상에서 벽 또는 바닥으로 인식하게 됨
+void mergeBlock(Tetris t)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            gameboard[t.curY + i][t.curX + j] |= blocks[t.curblock][t.rotation][i][j];
+        }
+    }
+    lineCheck(t);
+    showTable(t);
+}
 
 int main() {
 
