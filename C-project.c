@@ -16,7 +16,7 @@
 #define SPACE 32 // 빠르게 내려오기
 #define SPEED 600 // 속도
 
-
+// 구조체
 typedef struct _tetris {
     int level; // 게임의 레벨
     int gameover; // 게임오버의 유무
@@ -299,7 +299,7 @@ void showTable(Tetris t)
 }
 
 // 랜덤함수를 사용해서 도형을 무작위로 나오게 하기
-// 랜덤 범위는 도형이 6개이니 0 ~ 5
+// 랜덤 범위는 도형이 7개이니 0 ~ 6이 나와야해서 % 7
 void newBlock(Tetris* t)
 {
     int rot = rand() % 7;
@@ -338,7 +338,9 @@ void nextBlockTable(Tetris t)
 // 충돌을 확인하는 함수
 // 미리 판단
 // 현재 블록의 부분이 1이고, 현재 좌표에 비례해서 이 블록의 다음 y좌표의 gameboard값이 1일 때
-// 1을 봔환하고 벽이나 바닥에 부딛히지 않았다면 0을 반환합니다.
+// 이 블록의 다음 y좌표의 gameboard의 값이 벽이거나 바닥일 때 1을 반환하고, 
+// 벽이나 바닥에 부딛히지 않았다면 0을 반환합니다.
+// 즉, 현재 도형의 다음 라인이 1일 경우 멈추게 하는 함수
 int collisionCheck(Tetris t)
 {
     int dat = 0;
@@ -359,7 +361,7 @@ int collisionCheck(Tetris t)
 
 
 // 도형이 바닥에 닿을 경우 벽이나 바닥으로 인식하는 함수
-// 현재 t 구조체의 curY curX에 대하여 gameboard 좌표상에 blocks를 추가 시킨다
+// 현재 t 구조체의 curY curX에 대하여 gameboard 좌표상에 block 추가 시킨다
 // 이후부터는 합쳐진 블럭은 gameboard상에서 벽 또는 바닥으로 인식하게 됨
 void mergeBlock(Tetris t)
 {
@@ -375,11 +377,11 @@ void mergeBlock(Tetris t)
 }
 
 // 인식된 키에 따라 반응하는 함수
-// 블럭이 움직이게 해주는 함수를 만들고, 이전의 블럭의 그림을 제거해주는
+// 블럭이 움직이게 해주는 함수를 만들고, 블럭의 그림을 제거해주는
 // "removeCurrentBlock"을 호출해주고 curY의 값을 1 증가시켜준다.
-// 또한 충동했다면 새로 블럭을 생성하도록 초기화해주는 과정이 들어갔다.
+// 또한 충돌했다면 새로 블럭을 생성하도록 초기화해주는 과정이 들어갔다.
 // 만약에 충돌했는데 Y가 0보다 작다, 즉 블럭이 꼭대기에 닿았을 경우에 1을 반환하고
-// 그렇지 않으면 2 또는 충돌을 안했다면 1을 반환한다.
+// 그렇지 않으면 2 또는 충돌을 안했다면 0을 반환한다.
 // 즉, 1을 반환하면 게임 오버
 int moveBlock(Tetris* t)
 {
@@ -411,34 +413,43 @@ int moveBlock(Tetris* t)
 
 void lineCheck(Tetris t)
 {
+    // 앞에 j를 미리 선언하는 이유는 j의 경우에는 다른 부분에서 중복되게 체크해야 되기 때문
+    // i와 k는 선언을 하는김에 미리 선언
     int i, j, k;
     for (i = 0; i < Tetris_height - 1; i++)
     {
+        // j가 1부터 시작하는 이유는 라인의 첫번째는 테트리스의 테두리
+        // j의 끝 부분이 Tetris_width - 1인 이유는 라인의 마지막이 테트리스의 테투리이기 때문
         for (j = 1; j < Tetris_width - 1; j++)
         {
+            // 라인의 한 요소라도 0이라면 for문 전체를 탈출
+            // 즉 라인이 채워지지 않아서 제거가 되지 않음
             if (gameboard[i][j] == 0)
                 break;
         }
+
+        // 라인의 한 요소라도 0이 아닐 경우 즉, 라인이 모두 채워졌을 경우 실행
         if (j == Tetris_width - 1)	//한줄이 다 채워졌음
         {
             showTable(t);
-            setCursor(1 * 2 + t.absX, i + t.absY);
-            for (j = 1; j < Tetris_width - 1; j++)
-            {
-                printf("□");
-                Sleep(10);
-            }
+
+            // 라인을 0으로 만들고 공백으로 채운다
             setCursor(1 * 2 + t.absX, i + t.absY);
             for (j = 1; j < Tetris_width - 1; j++)
             {
                 printf("  ");
                 Sleep(10);
             }
+
+            // 제거되지 않은 라인은 전부 한킨씩 내린다
             for (k = i; k > 0; k--)
             {
                 for (j = 1; j < Tetris_width - 1; j++)
                     gameboard[k][j] = gameboard[k - 1][j];
             }
+
+            // 가장 위 라인은 빈 부분으로 둔다
+            // 도형이 생성되는 부분
             for (j = 1; j < Tetris_width - 1; j++)
                 gameboard[0][j] = 0;
             t.score += 100 + (t.level * 10) + (rand() % 10);
@@ -446,6 +457,76 @@ void lineCheck(Tetris t)
     }
 }
 
-int main(){
+int main() {
+    Tetris t, tmpT;
+    char key;
+    init(&t);
+    while (1) {
+        removeCursor();
+        showTable(t);
+        newBlock(&t);
+        nextBlockTable(t);
+        while (1) {
+            // kbhit() 함수는 키보드가 눌렸는지 판단하는 함수
+            // 키보드가 눌렸으면 1, 아니면 0
+            while (-_kbhit()) {
+                removeCursor();
+                key = _getch(); // scanf와 달리 입력 받는 동시에 반응을 하는 함수
+                switch (key) {
+                case UP: // 위 키를 눌렀을 때
+                    tmpT = t;
+                    tmpT.rotation = (tmpT.rotation + 1) % 4; // 도형의 회전 개수 4개(0 ~ 3)
+                    if (collisionCheck(tmpT) == 0) {
+                        removeCurrentBlock(t);
+                        t.rotation = tmpT.rotation;
+                        showCurrentBlock(t);
+                    }
+                    break;
+                case DOWN: // 아래 키를 눌렀을 때
+                    t.gameover = moveBlock(&t);
+                    showCurrentBlock(t);
+                    break;
+                case LEFT: // 왼쪽 키를 눌렀을 때
+                    if (t.curX > 0) {
+                        removeCurrentBlock(t);
+                        t.curX--;
+                        if (collisionCheck(t) == 1)
+                            t.curX++;
+                        showCurrentBlock(t);
+                    }
+                    break;
+                case RIGHT: // 오른쪽 키를 눌렀을 때
+                    if (t.curX < Tetris_height) {
+                        removeCurrentBlock(t);
+                        t.curX++;
+                        if (collisionCheck(t) == 1)
+                            t.curX--;
+                        showCurrentBlock(t);
+                    }
+                    break;
+                }
+                // 스페이스바는 swich문으로 안하는 이유는
+                // swich문에 넣으면 방향키와 스페이스바를 동시에 사용이 불가능하기 때문에
+                if (key == SPACE) // 아래 키를 눌렀을 때 
+                {
+                    while (t.gameover == 0)
+                        t.gameover = moveBlock(&t);
+                    showCurrentBlock(t);
+                }
 
+            }
+            if (t.gameover == 1) {
+                return 0;
+            }
+            while (!- _kbhit()) {
+                showCurrentBlock(t);
+                removeCursor();
+                Sleep(SPEED - (t.level * 10));
+                t.gameover = moveBlock(&t);
+            }
+        }
+        init(&t);
+    }
+    system("pause");
+    return 0;
 }
