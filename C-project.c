@@ -284,6 +284,7 @@ void removeCurrentBlock(Tetris t)
             }
 }
 
+// 테트리스의 gameboard의 실체화
 void showTable(Tetris t)
 {
     for (int y = 0; y < Tetris_height; y++)
