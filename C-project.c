@@ -249,6 +249,8 @@ void init(Tetris* t) {
     }
 }
 
+// 현재 블럭이 생성돼서 위에서 아래로 떨어질 때
+// 다음에 생성될 블럭을 보여주도록 도와주는 함수
 void showCurrentBlock(Tetris t)
 {
     for (int i = 0; i < 4; i++)
